@@ -1,19 +1,16 @@
 import { Server } from "http";
 import { Server as SocketIOServer } from "socket.io";
+import { handleConnection } from "./room";
 
-export function initializeSocketServer(httpServer:Server){
+export function initializeSocketServer(httpServer: Server) {
     const io = new SocketIOServer(httpServer, {
         cors: {
             origin: "*",
-            methods: ["GET", "POST"]
-        }
+            methods: ["GET", "POST"],
+        },
     });
+
     io.on("connection", (socket) => {
-        console.log("A user connected",socket.id);
-        
-        socket.on("disconnect", () => {
-            console.log("A user disconnected",socket.id);
-        });
-    }
-)
+        handleConnection(socket, io);
+    });
 }
